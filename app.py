@@ -3,6 +3,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from description import run_description
 from eda import run_eda
+from stats import run_stat
 
 def main():
     with st.sidebar:
@@ -17,7 +18,7 @@ def main():
     elif selected == 'EDA':
         run_eda()
     elif selected == 'STAT':
-        pass
+        run_stat()
     else:
         print('error..')
 
