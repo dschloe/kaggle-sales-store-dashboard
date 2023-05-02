@@ -8,3 +8,4 @@ scikit-learn
 plotly
 xgboost
 streamlit
+streamlit-option-menu

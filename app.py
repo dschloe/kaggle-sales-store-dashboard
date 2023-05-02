@@ -1,35 +1,26 @@
 # -*- coding:utf-8 -*-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import calendar
-import datetime
-
-from statsmodels.tsa.deterministic import CalendarFourier, DeterministicProcess
-from statsmodels.tsa.stattools import adfuller
-from sklearn.preprocessing import OrdinalEncoder,OneHotEncoder
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.model_selection import cross_val_score, train_test_split
-from sklearn.metrics import mean_absolute_error
-from xgboost import XGBRegressor
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-from sklearn.metrics import mean_absolute_error
-from sklearn.neighbors import KNeighborsRegressor
-
-import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.figure_factory as ff
-import plotly.offline as offline
-import plotly.graph_objs as go
-
-import pingouin
 import streamlit as st
+from streamlit_option_menu import option_menu
+from description import run_description
+from eda import run_eda
 
 def main():
-    st.title("Hello World")
-    st.title("Hll")
+    with st.sidebar:
+        selected = option_menu("Main Menu", ['Home', 'Description', 'Data', 'EDA', 'STAT'],
+                icons=['house', 'card-checklist', 'card-checklist', 'bar-chart', 'clipboard-data'],
+                menu_icon="cast", default_index=1, orientation = 'vertical')
+
+    if selected == 'Description':
+        run_description()
+    elif selected == 'Data':
+        pass
+    elif selected == 'EDA':
+        run_eda()
+    elif selected == 'STAT':
+        pass
+    else:
+        print('error..')
+
 
 if __name__ == "__main__":
     main()
