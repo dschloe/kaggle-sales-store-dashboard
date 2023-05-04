@@ -9,6 +9,11 @@ from pathlib import Path
 
 from utils import date_select, load_data
 
+import pandas_profiling
+import streamlit as st
+
+from streamlit_pandas_profiling import st_profile_report
+
 @st.cache_data
 def load_data():
     comp_dir = Path('data/store-sales-time-series-forecasting')
@@ -20,26 +25,35 @@ def load_data():
 
     return train, stores, oil, transactions, holidays_events
 
+@st.cache_resource(experimental_allow_widgets=True)
 def show_data(train, stores, oil, transactions, holidays_events):
-    st.markdown("## Train 데이터")
-    st.dataframe(train, use_container_width=True)
-    st.markdown('<hr>', unsafe_allow_html=True)
+    st.markdown("## Data Preview")
+    sample_ratio = st.sidebar.slider('Sample Ratio (0~1)', min_value=0.1, max_value=1.0, step=0.1)
+    tab1, tab2, tab3, tab4 = st.tabs(['train', 'stores', 'oil', 'transactions'])
 
-    st.markdown("## Stores 데이터")
-    st.dataframe(stores, use_container_width=True)
-    st.markdown('<hr>', unsafe_allow_html=True)
+    with tab1:
+        with st.expander("Train Data"):
+            train_sample = train.sample(frac=sample_ratio)
+            pr = train_sample.profile_report()
+            st_profile_report(pr)
+    with tab2:
+        with st.expander("Stores Data"):
+            stores_sample = stores.sample(frac=0.1)
+            pr = stores_sample.profile_report()
+            st_profile_report(pr)
 
-    st.markdown("## Oil 데이터")
-    st.dataframe(oil, use_container_width=True)
-    st.markdown('<hr>', unsafe_allow_html=True)
+    with tab3:
+        with st.expander("Oil Data"):
+            oil_sample = oil.sample(frac=0.1)
+            pr = oil_sample.profile_report()
+            st_profile_report(pr)
 
-    st.markdown("## Transactions 데이터")
-    st.dataframe(transactions, use_container_width=True)
-    st.markdown('<hr>', unsafe_allow_html=True)
+    with tab4:
+        with st.expander("Transactions Data"):
+            transactions_sample = transactions.sample(frac=0.1)
+            pr = transactions_sample.profile_report()
+            st_profile_report(pr)
 
-    st.markdown("## Holiday Events 데이터")
-    st.dataframe(holidays_events, use_container_width=True)
-    st.markdown('<hr>', unsafe_allow_html=True)
 
 def show_chart(train, stores, oil, transactions, holidays_events):
 
