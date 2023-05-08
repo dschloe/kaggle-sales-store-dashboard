@@ -14,17 +14,11 @@ import pandas_profiling
 import streamlit as st
 
 from streamlit_pandas_profiling import st_profile_report
+from eda.family_eda import run_Show
+from eda.earthquake_sales import total_Sales
+from eda.oil import run_oil_sales
+from utils import load_data
 
-@st.cache_data
-def load_data():
-    comp_dir = Path('data/store-sales-time-series-forecasting')
-    train = pd.read_csv(comp_dir / 'train_sample_201516.csv')
-    stores = pd.read_csv(comp_dir / 'stores.csv')
-    oil = pd.read_csv(comp_dir / 'oil.csv')
-    transactions = pd.read_csv(comp_dir / 'transactions.csv')
-    holidays_events = pd.read_csv(comp_dir / 'holidays_events.csv')
-
-    return train, stores, oil, transactions, holidays_events
 
 @st.cache_resource(experimental_allow_widgets=True)
 def show_data(train, stores, oil, transactions, holidays_events):
@@ -39,19 +33,19 @@ def show_data(train, stores, oil, transactions, holidays_events):
             st_profile_report(pr)
     with tab2:
         with st.expander("Stores Data"):
-            stores_sample = stores.sample(frac=0.1)
+            stores_sample = stores.sample(frac=sample_ratio)
             pr = stores_sample.profile_report()
             st_profile_report(pr)
 
     with tab3:
         with st.expander("Oil Data"):
-            oil_sample = oil.sample(frac=0.1)
+            oil_sample = oil.sample(frac=sample_ratio)
             pr = oil_sample.profile_report()
             st_profile_report(pr)
 
     with tab4:
         with st.expander("Transactions Data"):
-            transactions_sample = transactions.sample(frac=0.1)
+            transactions_sample = transactions.sample(frac=sample_ratio)
             pr = transactions_sample.profile_report()
             st_profile_report(pr)
 
@@ -204,15 +198,20 @@ def show_chart(train, stores, oil, transactions, holidays_events):
     st.markdown("📌 **Interpret:** As we can appreeciate, sales has an constantly increasing trend during recorded years.", unsafe_allow_html=True)
 
 
-
 def run_eda():
     train, stores, oil, transactions, holidays_events = load_data()
 
-    submenu = st.sidebar.selectbox("Submenu", ['Show Data', 'Charts'])
+    submenu = st.sidebar.selectbox("Menu", ['Show Data', 'Charts', 'Family EDA', 'Earthquake and Sales', 'Oil and Sales'])
     if submenu == 'Show Data':
         show_data(train, stores, oil, transactions, holidays_events)
     elif submenu == 'Charts':
         show_chart(train, stores, oil, transactions, holidays_events)
         st.caption("Code From : [Time Series Forecasting Tutorial](https://www.kaggle.com/code/javigallego/time-series-forecasting-tutorial)")
+    elif submenu == 'Family EDA':
+        run_Show()
+    elif submenu == 'Earthquake and Sales':
+        total_Sales(train, stores)
+    elif submenu == 'Oil and Sales':
+        run_oil_sales(train, stores, oil, transactions)
     else:
         pass

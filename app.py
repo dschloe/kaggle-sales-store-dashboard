@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from description import run_description
 from data_intro import run_dataIntro
-from eda import run_eda
+from eda.eda import run_eda
 from stats import run_stat
 from ml import run_ml
 
